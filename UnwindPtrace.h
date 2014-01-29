@@ -19,7 +19,7 @@
 
 #include <string>
 
-#include "Backtrace.h"
+#include "BacktraceImpl.h"
 
 #include <libunwind.h>
 
@@ -31,8 +31,6 @@ public:
   virtual bool Unwind(size_t num_ignore_frames);
 
   virtual std::string GetFunctionNameRaw(uintptr_t pc, uintptr_t* offset);
-
-  virtual BacktraceMap* CreateBacktraceMap(pid_t pid) { return new BacktraceMap(pid); }
 
 private:
   unw_addr_space_t addr_space_;
