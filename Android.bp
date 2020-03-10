@@ -48,12 +48,22 @@ cc_library_headers {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    min_sdk_version: "apex_inherit",
 }
 
-cc_defaults {
-    name: "libbacktrace_defaults",
+cc_library {
+    name: "libbacktrace",
+    vendor_available: false,
+    recovery_available: true,
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    vndk: {
+        enabled: true,
+        support_system_process: true,
+    },
     defaults: ["libbacktrace_common"],
+    host_supported: true,
 
     cflags: [
         "-Wexit-time-destructors",
@@ -78,6 +88,7 @@ cc_defaults {
             shared_libs: [
                 "libbase",
                 "liblog",
+                "libunwindstack",
             ],
 
             static_libs: [
@@ -86,54 +97,12 @@ cc_defaults {
         },
         android: {
             static_libs: ["libasync_safe"],
-            static: {
-                whole_static_libs: ["libasync_safe"],
-            },
-        },
-    },
-}
-
-cc_library {
-    name: "libbacktrace",
-    vendor_available: false,
-    recovery_available: true,
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    vndk: {
-        enabled: true,
-        support_system_process: true,
-    },
-    host_supported: true,
-    defaults: ["libbacktrace_defaults"],
-
-    target: {
-        linux: {
-            shared_libs: [
-                "libunwindstack",
-            ],
         },
         vendor: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
         },
         recovery: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
-        },
-    },
-}
-
-// Static library without DEX support to avoid dependencies on the ART APEX.
-cc_library_static {
-    name: "libbacktrace_no_dex",
-    visibility: ["//system/core/debuggerd"],
-    defaults: ["libbacktrace_defaults"],
-    cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
-    target: {
-        linux: {
-            static_libs: [
-                "libunwindstack_no_dex",
-            ],
         },
     },
 }
