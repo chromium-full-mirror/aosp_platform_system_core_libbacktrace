@@ -1584,7 +1584,7 @@ static void UnwindFromDevice(Backtrace* backtrace, void* device_map) {
   // Verify the flag is set.
   ASSERT_EQ(PROT_DEVICE_MAP, map.flags & PROT_DEVICE_MAP);
 
-  // Quick basic checks of functionality.
+  // Quick sanity checks.
   uint64_t offset;
   ASSERT_EQ(std::string(""), backtrace->GetFunctionName(device_map_uint, &offset));
   ASSERT_EQ(std::string(""), backtrace->GetFunctionName(device_map_uint, &offset, &map));
